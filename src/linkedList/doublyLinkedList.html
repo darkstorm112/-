@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>双向链表</title>
+</head>
+<body>
+
+    <script>
+        // 双向链表类
+        function DbLinked () {
+
+            // 内类 子节点
+            function Node (data) {
+                this.data = data
+                this.next = null
+                this.prev = null
+            }
+
+            this.head = null
+            this.tail = null
+            this.length = 0
+
+            // 1、追加
+            DbLinked.prototype.append = function (data) {
+                var node = new Node(data)
+                var lastOne = this.tail
+                console.log(lastOne)
+                // 链表为空
+                if(!this.tail){
+                    this.head = node
+                    this.tail = node
+                }else{
+                    lastOne.next = node
+                    node.prev = lastOne
+                    this.tail = node
+                }
+
+                this.length += 1
+            }
+
+            // 2、字符串
+            DbLinked.prototype.toString = function () {
+                var DbStr = ''
+
+                var current = this.head
+
+                while( current ) {
+                    DbStr += current.data + '  ' 
+                    current = current.next
+                }
+
+                return DbStr
+            }
+
+            // 3、指定位置插入数据
+            DbLinked.prototype.insert = function (data, position) {
+                // 边界限制
+                if( typeof position !== 'number' )return false
+                if(position > this.length || position < 0)return false
+
+                var node = new Node(data)
+                var current = this.head
+                var prev = null
+                var index = 0
+
+                while ( index++ < position ) {
+                    pre = current
+                    current = current.next
+                }
+
+                // 链表为空
+                if( !current ) {
+                    this.head = node
+                    this.tail = node
+                }
+                //插入首位
+                else if( !current.prev ) {
+                    current.prev = node
+                    node.next = current
+                    this.head = node
+                }
+                // 插入末尾
+                else if ( !current.next ) {
+                    current.next = node
+                    node.prev = current
+                    this.tail = node
+                }
+                // 插入中间
+                else {
+                    pre.next = node
+                    node.prev = pre
+
+                    node.next = current
+                    current.prev = node
+                }
+
+                this.length += 1
+
+                return node
+
+            }
+
+            // 4、获取对应位置的元素
+            DbLinked.prototype.get = function (position) {
+                // 边界
+                if( typeof position !== 'number' )return null
+                if(position >= this.length || position < 0)return null
+
+                var current = this.head
+                var index = 0
+
+                while ( index++ < position ) {
+                    current = current.next
+                }
+
+                if(!current) return null
+
+                return current
+
+            }
+
+            // 5、返回数据对应索引
+            DbLinked.prototype.indexOf = function (data) {
+                var current = this.head
+                var index = 0
+                while ( current ){
+                    if(current.data === data) return index
+                    current = current.next
+                    index += 1
+                }
+                return -1
+            }
+
+            // 6、修改某个位置的元素
+            DbLinked.prototype.update = function (newData, position) {
+                // 方法1
+                var current = this.get(position)
+                if(!current)  return false
+                current.data = newData
+                return true
+                
+            }
+
+            // 7、删除特定位置的一项
+            DbLinked.prototype.removeAt = function (position) {
+                var current = this.get(position)
+                if(!current)  return false
+                
+                // 判断特殊情况
+                // 只剩一个 
+                if (!current.next && !current.prev) {
+                    this.head = null
+                    this.tail = null
+                }
+
+                // 删除对象为最后一个
+                else if( !current.next ){
+                    var prevNode = current.prev
+                    prevNode.next = null
+                    this.tail = prevNode
+                }
+
+                // 删除对象为第一个
+                else if( !current.prev ){
+                    var nextNode = current.next
+                    nextNode.prev = null
+                    this.head = nextNode
+                }
+
+                // 删除中间
+                else {
+                    var prevNode = current.prev
+                    var nextNode = current.next
+
+                    prevNode.next = nextNode
+                    nextNode.prev = prevNode
+                }
+
+                this.length -= 1
+
+                return true
+            }
+
+            // 8、从列表中移除一项
+            DbLinked.prototype.remove = function (data) {
+                var position = this.indexOf(data)
+                return this.removeAt(position)
+            }
+
+            // 9、是否为空
+            DbLinked.prototype.isEmpty = function () { 
+                return !this.length
+            }
+
+            // 10、链表长度
+            DbLinked.prototype.size = function () {
+                return this.length
+            }
+
+            // 11、正向遍历
+            DbLinked.prototype.forwardString = function () {
+                return this.toString()
+            }
+
+            // 12、反向遍历
+            DbLinked.prototype.backwordString = function () {
+                return this.toString().split("").reverse().join("")
+            }
+
+            // 13、返回第一个数据
+            DbLinked.prototype.front = function () {
+                if(this.head) return this.head.data
+                return null
+            }
+
+            // 14、返回最后一个数据
+            DbLinked.prototype.lastOne = function () {
+                if(this.tail) return this.tail.data
+                return null
+            }
+        }
+
+        // 测试代码
+        //1/2、追加 字符串
+        var dblink = new DbLinked()
+
+        dblink.append('aaa')
+        dblink.append('bbb')
+        dblink.append('ccc')
+        dblink.append('ddd')
+        console.log(dblink)
+
+        // 3、指定位置插入数据
+        dblink.insert('vvv',0)
+
+        // 4、获取对应位置的元素
+        // alert(dblink.get(0))
+        // alert(dblink.get(3))
+
+        // 5、返回数据对应索引
+        // alert(dblink.indexOf('bbb'))
+        // alert(dblink.indexOf('b'))
+
+        // 6、修改某个位置的元素
+        // dblink.update('a',1)
+        // dblink.update('d',4)
+
+        // 7、删除特定位置的一项
+        dblink.removeAt(0)
+
+        // 8、从列表中移除一项
+        // dblink.remove('ddd')
+        dblink.remove('bbb')
+
+        // 9、是否为空
+        alert(dblink.isEmpty())
+
+        // 10、链表长度
+        alert(dblink.size())
+
+        // 11、正向遍历
+        alert(dblink.forwardString())
+
+        // 11、反向遍历
+        alert(dblink.backwordString())
+
+        alert(dblink)
+
+    </script>
+
+    
+</body>
+</html>

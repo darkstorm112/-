@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>栈</title>
+</head>
+<body>
+    <script>
+        // function Stack(){
+        //     this.items = []
+
+        //     //1、入栈 push
+        //     Stack.prototype.push = function (element){
+        //         this.items.push(element)
+        //     }
+
+        //     //2、出栈 pop
+        //     Stack.prototype.pop = function (){
+        //         return this.items.pop()
+        //     }
+
+        //     //3、获取栈顶数据 peak
+        //     Stack.prototype.peak = function (){
+        //         return this.items[this.items.length-1]
+        //     }
+
+        //     //4、是否为空 isEmpty
+        //     Stack.prototype.isEmpty = function (){
+        //         return !this.items.length
+        //     }
+
+        //     //5、长度 size
+        //     Stack.prototype.size = function (){
+        //         return this.items.length
+        //     }
+
+        // }
+
+        function Stack(){
+            this.items = []
+
+            //1、入栈 push
+            Stack.prototype.push = function (element){
+                this.items.unshift(element)
+            }
+
+            //2、出栈 pop
+            Stack.prototype.pop = function (){
+                return this.items.shift()
+            }
+
+            //3、获取栈顶数据 peak
+            Stack.prototype.peak = function (){
+                return this.items[0]
+            }
+
+            //4、是否为空 isEmpty
+            Stack.prototype.isEmpty = function (){
+                return !this.items.length
+            }
+
+            //5、长度 size
+            Stack.prototype.size = function (){
+                return this.items.length
+            }
+
+            Stack.prototype.toString = function (){
+                return this.items.join(' ')
+            }
+
+        }
+
+        var s = new Stack()
+        s.push(100)
+        s.push(1)
+        s.push(90)
+        s.push(66)
+        s.push(20)
+        s.push(121)
+        alert(s)
+
+        function binary (num){
+            if(typeof num !== 'number')return new Error('请输入数字类型')
+
+
+            //创建一个栈实例
+            var s = new Stack()
+
+            //循环
+            while (num>0){
+                s.push(num%2)
+
+                num = Math.floor(num/2)
+            }
+
+            //将栈内数据取出来  循环
+            var bin = ''
+            while (!(s.isEmpty())){
+                bin += s.pop()
+            }
+
+            return bin
+        }
+
+        alert(binary(10))
+
+        alert(binary(100))
+
+        alert(binary(1000))
+
+
+    </script>
+</body>
+</html>
+
+

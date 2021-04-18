@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>队列</title>
+</head>
+<body>
+    <script>
+        
+        function Queue () {
+            this.items = []
+
+            // 入队列
+            Queue.prototype.enterQueue = function (element) {
+                this.items.push(element)
+            }
+
+            // 出队列
+            Queue.prototype.leaveQueue = function () {
+                return this.items.shift()
+            }
+
+            // 返回队列第一个元素
+            Queue.prototype.front = function () {
+                return this.items[0]
+            }
+
+            // 查看队列是否为空
+            Queue.prototype.isEmpty = function () {
+                return !this.items.length
+            }
+
+            // 查看队列长度
+            Queue.prototype.size = function () {
+                return this.items.length
+            }
+
+            // 队列转字符串
+            Queue.prototype.toString = function () {
+                return this.items.join(' ')
+            }
+        }
+
+        var queue = new Queue()
+        
+        // queue.enterQueue('aaa')
+        // queue.enterQueue('bbb')
+        // queue.enterQueue('ccc')
+        // queue.enterQueue('ddd')
+        // queue.enterQueue('eee')
+        // alert(queue.isEmpty())
+        // queue.leaveQueue()
+        // alert(queue)
+        // alert(queue.size())
+        // queue.leaveQueue()
+        // alert(queue)
+        // alert(queue.front())
+
+        // 击鼓传花
+        function flower (nameList,num){
+            // 创建一个队列
+            var queue = new Queue()
+
+            // 将名单姓名加入队列中去
+            nameList.forEach(element => {
+                queue.enterQueue(element)
+            });
+
+            // 当队列长度为一时停止循环
+            while (queue.size() > 1){
+
+                // 循环数字，队列中每一项不是该数字时添加到最后，
+                for(var i=0;i < num - 1;i++){
+                    // 取出队列--》添加到最后
+                    queue.enterQueue(queue.leaveQueue())
+                }
+                // 相等时取出队列中该数据
+                queue.leaveQueue()
+            }
+
+            // 返回队列的第一项/取出队列的第一项
+            return queue.leaveQueue()
+        }
+
+        var list = ['aaa','bbb','ccc','ddd','eee']
+
+        alert(flower(list,4))
+
+    </script>
+</body>
+</html>

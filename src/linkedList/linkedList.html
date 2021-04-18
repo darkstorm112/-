@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>单向链表</title>
+</head>
+<body>
+    
+    <script>
+        function LinkedList () {
+
+
+            this.length = 0
+            this.head = null
+
+            function LinkNode (data) {
+                this.data = data
+                this.next = null
+            }
+
+            // 追加
+            LinkedList.prototype.append = function (data) {
+
+                var node = new LinkNode(data)
+
+                var currentNode = this.head
+
+                if(!currentNode){
+                    this.head = node
+                }else{
+                    while (currentNode.next){
+                        currentNode = currentNode.next
+                    }
+                    currentNode.next = node
+                }
+
+                this.length += 1
+            }
+
+            // 插入
+            LinkedList.prototype.insert = function (data,position){
+                if(typeof position !== 'number')return alert('插入位置请输入数字')
+                if(position < 0)return alert('位置不能是负数')
+                if(position > this.length)return alert('位置不能大于链表的长度')
+
+                var currentNode = this.head
+                var newNode = new LinkNode(data)
+
+                if(!position){
+                    this.head = newNode
+                    newNode.next = currentNode
+                }else{
+
+                    for(var i=1; i < position; i++){
+
+                        currentNode = currentNode.next
+                    }
+
+                    newNode.next = currentNode.next
+
+                    currentNode.next = newNode
+                }
+
+                this.length += 1
+            }
+
+            // 返回字符串
+            LinkedList.prototype.toString = function () {
+                var currentNode = this.head
+                var strList = ''
+
+                while (currentNode) {
+                    strList += currentNode.data + ' '
+                    currentNode = currentNode.next
+                }
+
+                return strList
+            }
+
+            // 查询方法
+            LinkedList.prototype.get = function (position) {
+                if(typeof position !== 'number')return null
+                if(position < 0 || position >= this.length)return null
+
+                var current = this.head
+                var index = 0
+
+                while ( index++ < position ) {
+                    current = current.next
+                }
+
+                return current.data
+            }
+
+            // 返回列表中的索引
+            LinkedList.prototype.indexOf = function (data) {
+                var current = this.head
+                var index = 0
+
+                // while ( current ) {
+                //     if(current.data === data)break
+                //     current = current.next
+                //     index += 1
+                // }
+
+                while ( current ) {
+                    if(current.data === data)return index
+                    current = current.next
+                    index += 1
+                }
+
+                return -1
+            }
+
+            // 更新 
+            LinkedList.prototype.updated = function (data, position) {
+                if(typeof position !== 'number')return null
+                if(position < 0 || position >= this.length)return false
+
+                var current = this.head
+                var index = 0
+                while ( index++ < position) {
+                    current = current.next
+                }
+
+                current.data = data
+
+                return true
+            }
+
+            // 特定位置删除某项 
+            LinkedList.prototype.removeAt = function (position) {
+                if(typeof position !== 'number')return null
+                if(position < 0 || position >= this.length)return null
+
+                var current = this.head
+                var pre = null
+                var index = 0
+                while ( index++ < position ){
+                    pre = current
+                    current = current.next
+                }
+
+                if(position){
+                    pre.next = current.next
+
+                }else{
+                    this.head = current.next
+                }
+
+                this.length -= 1
+
+                return current.data
+            }
+
+            // 从列表中移除某项 
+            // LinkedList.prototype.remove = function (data) {
+            //     // 链表为空
+            //     if(!this.head) return false
+
+            //     var current = this.head
+            //     var pre = null
+
+            //     while ( current ) {
+            //         if(current.data===data)break
+            //         pre = current
+            //         current = current.next
+            //     }
+
+            //     if( !pre ) {
+            //         this.head = current.next
+            //     } else {
+            //         pre.next = current.next
+            //     }
+
+            //     this.length -= 1
+            // }
+
+            // 从列表中移除某项 优化 
+            LinkedList.prototype.remove = function (data) {
+                var position = this.indexOf(data)
+                return this.removeAt(position)
+            }
+
+            // 是否为空 
+            LinkedList.prototype.isEmpty = function () {
+                return !this.length
+            }
+
+            // 长度 
+            LinkedList.prototype.size = function () {
+                return this.length
+            }
+
+        }
+
+
+        // 测试代码
+        var link = new LinkedList()
+
+        // 1追加
+        link.append('aaa')
+        link.append('bbb')
+        link.append('ccc')
+        link.append('ddd')
+        // link.append('ddd')
+        // link.append('eee')
+        // alert(link)
+
+        // 2、插入
+        link.insert('vvv',4)
+        // link.insert('nnn',0)
+
+        // alert(link)
+
+        // alert(link.get(2))
+
+        // 3、位置--序号
+        // alert(link.indexOf('aaa'))
+        // alert(link.indexOf('ddd'))
+
+        // 4、查询
+        // alert(link.get(4))
+
+        // 5、更新
+        // alert(link.updated('aa',0))
+        // alert(link.updated('dd',3))
+        // alert(link.updated('dd',32))
+
+        // 6、删除某项
+        // link.removeAt(3)
+
+        // 7、删除
+        // link.remove('aaa')
+
+        // 8、是否为空
+        alert(link.isEmpty())
+
+        // 9、长度
+        alert(link.size())
+
+
+
+
+
+        alert(link)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>优先级队列</title>
+</head>
+<body>
+    
+    <script>
+        PriorityQueue = function () {
+            this.items = []
+
+            function ElementItem (element,priority) {
+                this.element = element
+                this.priority = priority
+            }
+
+            // 进入队列
+            PriorityQueue.prototype.enterQueue = function (element,priority) {
+                // 创建子元素类
+                var item = new ElementItem(element,priority)
+                var add = false
+
+                // 循环  有问题  目前没发现啥情况
+                // this.items.forEach((ele,index,items) => {
+                //     if(ele.priority>item.priority){
+                //         add = true
+                //         items.splice(index,0,item)
+                //         // alert(this.toString())
+                //         return
+                //     }
+                // })
+
+                // 没问题 果然最原始最可靠
+                for(var i=0;i<this.items.length;i++){
+                    if(this.items[i].priority>item.priority){
+                        add = true
+                        this.items.splice(i,0,item)
+                        break
+                    }
+                }
+                
+                if(!add){
+                    this.items.push(item)
+                }
+            }
+
+            // 出队列
+            PriorityQueue.prototype.leaveQueue = function () {
+                return this.items.shift()
+            }
+
+            // 返回队列第一个元素
+            PriorityQueue.prototype.front = function () {
+                return this.items[0]
+            }
+
+            // 查看队列是否为空
+            PriorityQueue.prototype.isEmpty = function () {
+                return !this.items.length
+            }
+
+            // 查看队列长度
+            PriorityQueue.prototype.size = function () {
+                return this.items.length
+            }
+
+            // 队列转字符串
+            PriorityQueue.prototype.toString = function () {
+                var str = ''
+                this.items.forEach(item => {
+                    str += item.element + '--' + item.priority + '  '
+                })
+                return str
+            }
+        }
+
+        var pq = new PriorityQueue()
+
+        pq.enterQueue('aaa',60)
+        pq.enterQueue('bbb',6)
+        pq.enterQueue('eee',1)
+        pq.enterQueue('ccc',160)
+        pq.enterQueue('ddd',260)
+        pq.enterQueue('fff',30)
+        alert(pq.size())
+        alert(pq)
+
+    </script>
+</body>
+</html>
