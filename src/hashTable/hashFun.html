@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创建哈希函数</title>
+</head>
+<body>
+    
+    <script>
+        function hashFun (str,limit) {
+            var index = 0
+            var hashCode = 0
+            var count = 37
+            for (var i=0;i<str.length;i++){
+                console.log(str.charAt(i))
+                hashCode = count * hashCode + str.charCodeAt(i)
+            }
+
+            index = hashCode % limit
+
+            return index
+        }
+
+        alert(hashFun('abc',7))
+        alert(hashFun('cba',7))
+        alert(hashFun('nba',7))
+        alert(hashFun('mba',7))
+    </script>
+</body>
+</html>
