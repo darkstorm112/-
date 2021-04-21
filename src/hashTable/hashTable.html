@@ -10,53 +10,132 @@
     <script>
         function HashTable () {
             // 属性
-            this.table = []
+            this.storage = []
+            // 长度
             this.count = 0
+            // 数组容量
             this.limit = 7
 
             // 方法
             // 哈希函数
-            HashTable.prototype.hashFun = function (key, limit = this.limit) {
-                var index = 0
+            HashTable.prototype.hashFunc = function (str, limit = this.limit) {
+                // 初始化hashCode值
                 var hashCode = 0
+                // N次幂底数 使用质数
                 var count = 37
+
+                // 霍纳算法 计算hashCode的数值
                 for (var i=0;i<str.length;i++){
-                    console.log(str.charAt(i))
+                    
                     hashCode = count * hashCode + str.charCodeAt(i)
                 }
 
-                index = hashCode % limit
-                return index
+                // 取模运算
+                hashCode = hashCode % limit
+                return hashCode
             }
             // 获取哈希表中的桶
             HashTable.prototype.getBucket = function (key,type) {
                 // 获取数组下标
-                var index = this.hashFun(key,this.limit)
+                var index = this.hashFunc(key,this.limit)
                 
-                if(type!=='ADD')return this.table[index]
+                if(type!=='ADD')return this.storage[index]
                 // 获取桶
-                var bucket = this.table[index]
+                var bucket = this.storage[index]
                 if(!bucket){
                     bucket = []
-                    this.table[index] = bucket
+                    this.storage[index] = bucket
                 }
                 return bucket
             }
             // 新增、修改
             HashTable.prototype.put = function (key, value) {
-                // // 获取数组下标
-                // var index = this.hashFun(key)
-                // // 获取桶
-                // var bucket = this.table[index]
-                // // 判断桶
-                // if(bu )
+
+                // 获取桶
                 var bucket = this.getBucket(key,'ADD')
 
+                // 查看是否存在 存在则修改
                 for (var i=0; i<bucket.length; i++){
-                    // var bult
+                    // 元祖 重数
+                    var tuple = bucket[i]
+                    if(tuple[0]===key){
+                        tuple[1] = value
+                        return true
+                    }
                 }
+
+                // 不存在添加
+                bucket.push([key,value])
+                this.count += 1
+                return true
+            }
+            // 获取
+            HashTable.prototype.get = function (key) {
+
+                // 获取桶
+                var bucket = this.getBucket(key)
+
+                // 判断桶是否存在
+                if(!bucket)return null
+
+                // 查看桶里面是否存在key  有直接返回
+                for (var i=0; i<bucket.length; i++) {
+                    var tuple = bucket[i]
+                    if (tuple[0]===key)return tuple[1]
+                }
+
+                // 不存在 返回null
+                return null
+            }
+            // 删除
+            HashTable.prototype.remove = function (key) {
+
+                // 获取桶
+                var bucket = this.getBucket(key)
+
+                // 判断桶是否存在
+                if(!bucket)return false
+
+                // 查看桶里面是否存在key  有直接返回
+                for (var i=0; i<bucket.length; i++) {
+                    var tuple = bucket[i]
+                    if (tuple[0]===key){
+                        bucket.splice(i,1)
+                        this.count -= 1
+                        return tuple[1]
+                    }
+                }
+
+                // 不存在 返回false
+                return false
+            }
+            // 是否为空
+            HashTable.prototype.isEmpty = function () {
+                return !this.count
+            }
+            // 长度
+            HashTable.prototype.size = function () {
+                return this.count
             }
         }
+
+        // 测试代码
+        var ht = new HashTable()
+        ht.put('aaa',111)
+        ht.put('bbb',222)
+        ht.put('ccc',333)
+        ht.put('ddd',444)
+
+        alert(ht.size())
+        alert(ht.get('aaa'))
+        alert(ht.put('aaa',999))
+        alert(ht.get('aaa'))
+        alert(ht.remove('aaa'))
+        alert(ht.size())
+        alert(ht.get('aaa'))
+        alert(ht.isEmpty())
+
+
     </script>
 </body>
 </html>
