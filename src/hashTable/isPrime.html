@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>判断一个数是否为质数</title>
+</head>
+<body>
+
+    <script>
+        // 质数概念：只能被1和本身整除
+
+        // 1、最原始版本
+        function isPrime (num) {
+            for (var i=2; i<num; i++){
+                if(num % i === 0)return false
+            }
+            return true
+        }
+
+        // 2、优化版本
+        function isPrime (num) {
+            var sqrt = parseInt(Math.sqrt(num))
+            for (var i=2; i<=sqrt; i++){
+                if(num % i === 0)return false
+            }
+            return true
+        }
+
+        // // 2.1 优化版本
+        function isPrime (num) {
+            if(num<2)return false
+            if(num===2)return true
+            if( num % 2 === 0 )return false
+            var sqrt = parseInt(Math.sqrt(num))
+            for( var i=3; i<=sqrt; i+=2){
+                if( num % i === 0 )return false
+            }
+            return true
+        }
+
+        console.log(isPrime(3)) //true
+        console.log(isPrime(4)) //false
+        console.log(isPrime(5)) //true
+        console.log(isPrime(6)) //false
+        console.log(isPrime(7)) //true
+        console.log(isPrime(8)) //false
+        console.log(isPrime(9)) //false
+        console.log(isPrime(10)) //false
+        console.log(isPrime(11)) //true
+
+        
+    </script>
+    
+</body>
+</html>

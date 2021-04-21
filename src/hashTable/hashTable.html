@@ -48,6 +48,42 @@
                 }
                 return bucket
             }
+            // 判断是否为质数
+            HashTable.prototype.isPrime = function (num) {
+                if(num<2)return false
+                if(num===2)return true
+                if( num % 2 === 0 )return false
+                var sqrt = parseInt(Math.sqrt(num))
+                for( var i=3; i<=sqrt; i+=2){
+                    if( num % i === 0 )return false
+                }
+                return true
+            }
+            // 哈希表扩容
+            HashTable.prototype.resize = function (newLimit) {
+                var oldStorage = this.storage
+                
+                // 重置属性
+                this.storage = []
+                this.count = 0
+                this.limit = newLimit
+
+                // 将原来的数据重新插入hash表中去
+                for ( let bucket of oldStorage ){
+                    if(!bucket)continue
+
+                    for( let tuple of bucket ){
+                        this.put(tuple[0],tuple[1])
+                    }
+                }
+            }
+            // 哈希表是否需要扩容/缩容 
+            HashTable.prototype.isResize = function () {
+                if(this.count/this.limit>0.75)return 'ADD'
+                if(this.limit>7&&this.count/this.limit<0.25)return 'DEL'
+                return false
+            }
+            
             // 新增、修改
             HashTable.prototype.put = function (key, value) {
 
@@ -67,6 +103,15 @@
                 // 不存在添加
                 bucket.push([key,value])
                 this.count += 1
+
+                if(this.isResize()==='ADD'){
+                    var newLimit = this.limit * 2 + 1
+                    while (!this.isPrime(newLimit)){
+                        newLimit += 2
+                    }
+                    this.resize(newLimit)
+                }
+
                 return true
             }
             // 获取
@@ -102,6 +147,17 @@
                     if (tuple[0]===key){
                         bucket.splice(i,1)
                         this.count -= 1
+
+                        if(this.isResize()==='DEL'){
+                            var newLimit = parseInt(this.limit / 2)
+                            if(newLimit>7){
+                                while (!this.isPrime(newLimit)){
+                                    newLimit -= 1
+                                }
+                                this.resize(newLimit)
+                            }
+                        }
+
                         return tuple[1]
                     }
                 }
@@ -125,16 +181,25 @@
         ht.put('bbb',222)
         ht.put('ccc',333)
         ht.put('ddd',444)
-
-        alert(ht.size())
-        alert(ht.get('aaa'))
-        alert(ht.put('aaa',999))
-        alert(ht.get('aaa'))
-        alert(ht.remove('aaa'))
-        alert(ht.size())
-        alert(ht.get('aaa'))
-        alert(ht.isEmpty())
-
+        ht.put('eee',555)
+        ht.put('fff',666)
+        console.log(ht)
+        console.log(ht.size())
+        ht.remove('aaa')
+        ht.remove('bbb')
+        ht.remove('ccc')
+        ht.remove('ddd')
+        console.log(ht)
+        console.log(ht.size())
+        // alert(ht.size())
+        // alert(ht.get('aaa'))
+        // alert(ht.put('aaa',999))
+        // alert(ht.get('aaa'))
+        // alert(ht.remove('aaa'))
+        // alert(ht.size())
+        // alert(ht.get('aaa'))
+        // alert(ht.isEmpty())
+        // console.log(ht)
 
     </script>
 </body>
