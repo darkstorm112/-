@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二叉查询树</title>
+</head>
+<body>
+    <script>
+
+        // 类
+        function BinarySearchTree () {
+
+            // 属性
+            this.root = null
+
+            // 内类
+            function Node (key) {
+                this.left = null
+                this.right = null
+                this.key = key
+            }
+
+            // 方法
+            // 新增
+            BinarySearchTree.prototype.insert = function (key) {
+                if(!this.root){
+                    this.root = new Node(key)
+                    return
+                }
+                this.insertNode(this.root,new Node(key))
+            }
+            BinarySearchTree.prototype.insertNode = function (node,newNode) {
+                //把通常情况列出来
+                if(newNode.key < node.key){
+                    if(node.left==null){
+                        node.left = newNode
+                    }else{
+                        this.insertNode(node.left,newNode)
+                    }
+
+                }else if(newNode.key > node.key){
+                    if(node.right==null){
+                        node.right = newNode
+                    }else{
+                        this.insertNode(node.right,newNode)
+                    }
+                }
+            }
+
+            // 先序遍历 这个递归简直太漂亮了
+            BinarySearchTree.prototype.preOrderTraverse = function (handler=function(key){console.log(key)}) {
+                this.preOrderTraverseNode(this.root,handler)
+            }
+            BinarySearchTree.prototype.preOrderTraverseNode = function (node,handler) {
+                if(!node)return
+                handler(node.key)
+
+                this.preOrderTraverseNode(node.left,handler)
+
+                this.preOrderTraverseNode(node.right,handler)
+            }
+
+            // 中序遍历
+            BinarySearchTree.prototype.midOrderTraverse = function (handler=function(key){console.log(key)}) {
+                this.midOrderTraverseNode(this.root,handler)
+            }
+            BinarySearchTree.prototype.midOrderTraverseNode = function (node, handler) {
+                if(node==null)return
+                this.midOrderTraverseNode(node.left,handler)
+                handler(node.key)
+                this.midOrderTraverseNode(node.right,handler)
+            }
+
+            // 后序遍历
+            BinarySearchTree.prototype.postOrderTraverse = function (handler = function(key){console.log(key)}) {
+                this.postOrderTraverseNode(this.root,handler)
+            }
+            BinarySearchTree.prototype.postOrderTraverseNode = function (node, handler) {
+                if(node==null)return
+                this.postOrderTraverseNode(node.left, handler)
+                this.postOrderTraverseNode(node.right, handler)
+                handler(node.key)
+            }
+
+            // 最大值
+            BinarySearchTree.prototype.max = function () {
+                var node = this.root
+                var key = null
+                while (node) {
+                    key = node.key
+                    node = node.right
+                }
+                return key
+            }
+
+            // 最小值
+            BinarySearchTree.prototype.min = function () {
+                var node = this.root
+                var key = null
+                while (node) {
+                    key = node.key
+                    node = node.left
+                }
+                return key
+            }
+
+            // 在树中查找一个键 有就返回TRUE  没有返回false
+            BinarySearchTree.prototype.search = function (key) {
+
+                // return this.searchNode(this.root,key)
+                var node = this.root
+
+                while (node) {
+                    if( node.key===key )return true
+                    if(key < node.key){
+                        node = node.left
+                    }else if(key > node.key){
+                        node = node.right
+                    }
+                }
+                return false
+            }
+            BinarySearchTree.prototype.searchNode = function (node, key) {
+                if(node==null)return false
+                if(node.key===key)return true
+                if(key < node.key){
+                    return this.searchNode(node.left,key)
+                }else if(key > node.key){
+                    return this.searchNode(node.right,key)
+                }
+            }
+
+            // 获取真正的node  有数据就返回引用值  没数据则返回null （自己的想法）
+            BinarySearchTree.prototype.getNode = function ( key, node=this.root ) {
+                if(node==null)return null
+                if(node.key===key)return node
+                if(key < node.key){
+                    return this.getNode(key, node.left)
+                }else if(key > node.key){
+                    return this.getNode(key, node.right)
+                }
+            }
+            // 删除某节点（自己的想法）
+            BinarySearchTree.prototype.remove = function (key) {
+                //首先拿到查询到的节点
+                var node = this.root
+                var parentNode = null
+
+                while (node) {
+                    if( node.key===key )break
+                    parentNode = node
+                    if(key < node.key){
+                        node = node.left
+                    }else if(key > node.key){
+                        node = node.right
+                    }
+                }
+                
+                // var node = this.getNode(key)
+
+                // 1、没有查询到该节点 删除失败
+                if(node===null)return false
+
+                // 2、该节点为根节点
+                if(node===this.root){
+                    // 左右节点都存在
+                    if(node.left&&node.right){
+                        this.root = node.left
+                        this.insertNode(this.root,node.right)
+                    }
+                    // 只有左节点
+                    else if(node.left){
+                        this.root = node.left
+                    }
+                    // 只有右节点
+                    else if(node.right){
+                        this.root = node.right
+                    }
+
+                    // 只有根节点
+                    else{
+                        this.root = null
+                    }
+                    return true
+                }
+
+                // 3、该节点是其余节点
+                // 3、1 将要被删除节点为左节点
+                if(parentNode.left===node){
+                    
+                    // 删除节点为双节点
+                    if(node.left&&node.right){
+                        parentNode.left = node.left
+                        this.insertNode(parentNode, node.right)
+                    }
+                    
+                    // 删除节点为单节点 左边存在
+                    else if(node.left){
+                        parentNode.left = node.left
+                    }
+
+                    // 删除节点为单节点 右边存在
+                    else if(node.right){
+                        parentNode.left = node.right
+                    }
+
+                    // 删除节点为叶子节点
+                    else{
+                        parentNode.left = null
+                    }
+                }
+                
+                // 将要删除节点为 右边节点
+                else if(parentNode.right === node){
+                    // 删除节点为双节点
+                    if(node.left&&node.right){
+                        parentNode.right = node.right
+                        this.insertNode(parentNode, node.left)
+                    }
+                    
+                    // 删除节点为单节点 左边存在
+                    else if(node.left){
+                        parentNode.right = node.left
+                    }
+
+                    // 删除节点为单节点 右边存在
+                    else if(node.right){
+                        parentNode.right = node.right
+                    }
+
+                    // 删除节点为叶子节点
+                    else{
+                        parentNode.right = null
+                    }
+                }
+
+                return true
+            }
+        }
+
+        // 测试代码
+        var bst = new BinarySearchTree()
+        // 插入
+        bst.insert(16)
+        bst.insert(8)
+        bst.insert(22)
+        bst.insert(31)
+        bst.insert(6)
+        bst.insert(9)
+        bst.insert(12)
+        bst.insert(16)
+        bst.insert(28)
+        console.log(bst)
+
+        // bst.remove(16)
+        bst.remove(8)
+        bst.remove(22)
+        bst.remove(31)
+
+        console.log(bst)
+
+        // console.log(bst.getNode(9),11)
+
+        // var str = ''
+        // var handler = function (key) {
+        //     str += key + ' '
+        // }
+
+        // // 先序
+        // bst.preOrderTraverse(handler)
+        // alert(str)
+
+        // // 中序
+        // str = ''
+        // bst.midOrderTraverse(handler)
+        // alert(str)
+
+        // // 后序
+        // str = ''
+        // bst.postOrderTraverse(handler)
+        // alert(str)
+
+        // // 最大最小值
+        // alert(bst.max())
+        // alert(bst.min())
+
+        // // 根据key查找某个值
+        // alert(bst.search(12))
+        // alert(bst.search(32))
+        
+
+    </script>
+</body>
+</html>
