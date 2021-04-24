@@ -238,6 +238,122 @@
 
                 return true
             }
+
+            // 删除某个节点  学习案例方法
+            BinarySearchTree.prototype.remove2 = function (key) {
+                // 临时变量
+                var parent = null
+                var current = this.root
+                var isLeftChild = null
+
+                while ( current ) {
+                    if(current.key === key)break
+                    parent = current
+                    if(key < current.key) {
+                        isLeftChild = true
+                        current = current.left
+                    }else{
+                        isLeftChild = false
+                        current = current.right
+                    }
+                }
+
+                // 没找到
+                if(current===null)return false
+
+                // 删除的节点是叶子节点
+                if(current.left==null&&current.right==null){
+                    // 删除根节点
+                    if(current===this.root){
+                        this.root = null
+                    }
+                    // 删除节点为左侧节点
+                    else if(isLeftChild){
+                        parent.left = null
+                    }
+                    // 删除节点为右侧节点
+                    else{
+                        parent.right = null
+                    }
+
+                }
+                // 删除有一个子节点的节点  有左节点
+                else if(current.right==null){
+                    // 删除根节点
+                    if(current===this.root){
+                        this.root = current.left
+                    }
+                    // 删除节点为左侧节点
+                    else if(isLeftChild){
+                        parent.left = current.left
+                    }
+                    // 删除节点为右侧节点
+                    else{
+                        parent.right = current.left
+                    }
+                }
+                // 删除有一个子节点的节点  有右节点
+                else if(current.left==null){
+                    // 删除根节点
+                    if(current===this.root){
+                        this.root = current.right
+                    }
+                    // 删除节点为左侧节点
+                    else if(isLeftChild){
+                        parent.left = current.right
+                    }
+                    // 删除节点为右侧节点
+                    else{
+                        parent.right = current.right
+                    }
+                }
+
+                // 删除有两个节点的节点
+                else{
+                    // 获取后继节点
+                    var successor = this.getSuccessor(current)
+
+                    // 删除根节点
+                    if(current===this.root){
+                        this.root = successor
+                    }
+                     // 删除节点为左侧节点
+                     else if(isLeftChild){
+                        parent.left = successor
+                    }
+                    // 删除节点为右侧节点
+                    else{
+                       parent.right = successor
+                    }
+
+                    // 将删除节点的左节点赋值给 后继节点
+                    successor.left = current.left
+                }
+                return true
+
+            }
+            // 找后继的方法 
+            BinarySearchTree.prototype.getSuccessor = function (delNode) {
+
+                // 保存临时变量
+                var successorParent = delNode
+                // var successor = delNode
+
+                var successor = delNode.right
+
+                while (successor.left) {
+                    successorParent = current
+                    successor = successor.left
+                }
+
+                // 这里有点绕 画图是最好的 见文件夹中图片
+                if( successor !== delNode.right){
+                    successorParent.left = successor.right
+                    successor.right = delNode.right
+                }
+
+                return successor
+            }
         }
 
         // 测试代码
@@ -255,10 +371,10 @@
         console.log(bst)
 
         // bst.remove(16)
-        bst.remove(8)
-        bst.remove(22)
-        bst.remove(31)
-
+        bst.remove2(8)
+        bst.remove2(22)
+        bst.remove2(31)
+        console.log(bst.remove2(31))
         console.log(bst)
 
         // console.log(bst.getNode(9),11)
