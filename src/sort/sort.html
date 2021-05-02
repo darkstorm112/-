@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>排序算法</title>
+</head>
+<body>
+  <script>
+
+    // 封装ArrayList类
+    function ArrayList () {
+      this.array = []
+
+      // 插入数据
+      ArrayList.prototype.insert = function (item) {
+        this.array.push(item)
+        return true
+      }
+
+      // 字符串法则
+      ArrayList.prototype.toString = function () {
+        return this.array.join('-')
+      }
+
+      // 简单排序
+      // 位置交换
+      ArrayList.prototype.swap = function (m, n) {
+        // console.log(m,n)
+        let temp = this.array[m]
+        this.array[m] = this.array[n]
+        this.array[n] = temp
+      }
+      // 冒泡排序
+      ArrayList.prototype.bubblesort = function () {
+        let len = this.array.length
+
+        for (let i=0; i < len; i++){
+
+          for (let j=0; j < len-1-i; j++){
+            // 当前数据大于后一位交换位置
+            if(this.array[j] > this.array[j+1]){
+              // 交换位置
+              this.swap(j,j+1)
+            }
+          }
+        }
+      }
+      // 选择排序
+      ArrayList.prototype.selectsort = function () {
+        let len = this.array.length
+
+        for (let i=0; i < len; i++){
+          let min = i
+          
+          for (let j=i+1; j < len; j++){
+            // 找到每次循环最小值
+            if(this.array[min] > this.array[j]){
+              min = j
+            }
+          }
+
+          // 交换位置
+          if(i!==min){
+            this.swap(i,min)
+          }
+        }
+      }
+      // 插入排序 
+      ArrayList.prototype.insertsort = function () {
+        let len = this.array.length
+
+        for (let i=1; i < len; i++){
+          let c = i-1
+          let temp = this.array[i]
+
+          // 这个算法哪里有问题？没看明白 记录下
+          /*
+            内循环里面比较时不能使用this.array[i]
+            要使用temp来进行比较
+            原因：当第一次j向后移动时会改变array[i]的值
+          */
+          // for循环也可以
+          // for (let j=i-1; j>=0; j--){
+          //   if(this.array[j]>temp){
+          //     this.array[j+1] = this.array[j]
+          //     if(j===0){
+          //       this.array[0] = temp
+          //     }
+          //   }else if(this.array[j]<=temp){
+          //     this.array[j+1] = temp
+          //     break
+          //   }
+          // }
+
+          // while循环比较容易理解
+          while (c>=0&&this.array[c]>temp) {
+            this.array[c+1] = this.array[c]
+            c--
+          }
+          this.array[c+1] = temp
+        }
+                
+      }
+
+    }
+
+    // 初始化
+    var list = new ArrayList()
+
+    list.insert(32)
+    list.insert(10)
+    list.insert(89)
+    list.insert(324)
+    list.insert(69)
+    list.insert(54)
+    list.insert(90)
+    list.insert(74)
+    list.insert(66)
+    list.insert(23)
+    list.insert(18)
+    list.insert(7)
+
+    // alert(list)
+
+    // 冒泡排序
+    // list.bubblesort()
+    // alert(list)
+
+    // 选择排序
+    // list.selectsort()
+    // alert(list)
+    
+    // 插入排序
+    list.insertsort()
+    alert(list)
+  </script>
+</body>
+</html>
