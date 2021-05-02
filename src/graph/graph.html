@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>图</title>
+</head>
+<body>
+  <script type="module">
+    import Dictionary from './dict.js'
+    import Queue from './queue.js'
+    console.log(Dictionary)
+    // 定义一个类
+    function Graph () {
+      // 类属性
+      this.vertexes = []                //储存顶点
+      this.adjList = new Dictionary()   //储存边
+
+      // 方法
+      // 添加顶点
+      Graph.prototype.addVertex = function (v) {
+        // if(!v)return false
+        this.vertexes.push(v)
+        this.adjList.set(v, [])
+        return true
+      }
+
+      // 添加边
+      Graph.prototype.addEdge = function (v1, v2) {
+        if(!this.adjList.get(v1)||!this.adjList.get(v2))return false
+        if(!this.adjList.get(v1).find(i => i===v2)){
+          this.adjList.get(v1).push(v2)
+        }
+        if(!this.adjList.get(v2).find(i => i===v1)){
+          this.adjList.get(v2).push(v1)
+        }
+      }
+
+      // 打印方法
+      Graph.prototype.toString = function (handler) {
+        let str = ''
+        for (let vertex of this.vertexes) {
+          str += vertex + ' -> '
+          
+          // for (let item of this.adjList.get(vertex)){
+          //   str += item + ' '
+          // }
+          str += this.adjList.get(vertex).join(' ')
+          
+          str += '\n'
+        }
+        return str
+      }
+
+      // 为算法做准备
+      // 初始化顶点颜色  white/grey/black
+      Graph.prototype.initColor = function () {
+        let color = {}
+        for (let vertex of this.vertexes){
+          color[vertex] = 'white'
+        }
+        return color
+      }
+
+      // bfs 广度优先算法
+      Graph.prototype.bfs = function (v, handler) {
+        let color = this.initColor()
+        // 创建个队列
+        let queue = new Queue()
+
+        // 进入队列
+        queue.enterQueue(v)
+
+        // 循环队列
+        while (queue.size()) {
+          let currVertex = queue.leaveQueue()
+          if(handler){
+            handler(currVertex)
+          }
+          
+          // console.log(currVertex,this.adjList.get(currVertex))
+          for (let verterx of this.adjList.get(currVertex)){
+            if(color[verterx] === 'white'){
+              color[verterx] = 'grey'
+              // console.log(verterx)
+              queue.enterQueue(verterx)
+            }
+          }
+          color[currVertex] = 'black'
+        }
+      }
+
+      // dfs 深度优先算法
+      Graph.prototype.dfs = function (v, handler) {
+        let color = this.initColor()
+        this.dfsVisit(v, color, handler)
+      }
+      // 深度优先算法递归
+      Graph.prototype.dfsVisit = function (v, color, handler) {
+        color[v] = 'grey'
+        if(handler) {
+          handler(v)
+        }
+        var currv = this.adjList.get(v)
+
+        for (let vu of currv) {
+          if (color[vu]==='white'){
+            this.dfsVisit(vu, color, handler)
+          }
+        }
+        color[v] = 'black'
+      }
+    }
+
+    // 测试代码
+    var graph = new Graph()
+
+    // 添加顶点
+    var myVertexes = ["A", "B", "C", "D", "E", "F", "G", "H", "I"]
+    for (let item of myVertexes) {
+        graph.addVertex(item)
+    }
+
+    // 添加边
+    graph.addEdge('A', 'B');
+    graph.addEdge('A', 'C');
+    graph.addEdge('A', 'D');
+    graph.addEdge('C', 'D');
+    graph.addEdge('C', 'G');
+    graph.addEdge('D', 'G');
+    graph.addEdge('D', 'H');
+    graph.addEdge('B', 'E');
+    graph.addEdge('B', 'F');
+    graph.addEdge('E', 'I');
+
+    // 打印下
+    // alert(graph.toString())
+
+    // 调用广度优先算法
+    // var result = ""
+    // graph.bfs(graph.vertexes[0], function (v) {
+    //     result += v + " "
+    // })
+    // alert(result) // A B C D E F G H I 
+
+    var result = ""
+    graph.dfs(graph.vertexes[0], function (v) {
+        result += v + " "
+    })
+    alert(result) // A B E I F C D G H
+  </script>
+</body>
+</html>
